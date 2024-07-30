@@ -9,9 +9,9 @@ const Home = async () => {
 
   return (
     <div>
-      <div className="flex justify-between p-4">
+      <div className="flex justify-between items-center p-4">
         <h1 className="text-2xl font-bold">Paling Populer</h1>
-        <Link href="/populer" className="text-xl underline hover:text-indigo-500 transition-all">Lihat Semua</Link>
+        <Link href="/populer" className="md:text-xl text-sm underline hover:text-indigo-500 transition-all">Lihat Semua</Link>
       </div>
       <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4">
         {anime.data.map((data) => {

@@ -9,9 +9,12 @@ const InputSearch = () => {
     const router = useRouter()
 
 const handleSearch = (event) => {
-        if(event.key == "Enter" || event.type == "click") {
+    const keyword = searchRef.current.value //ketika dienter tidak terjadi apa-apa
+
+    if(!keyword) return
+
+        if(event.key == "Enter" || event.type == "click") {  //function enter dan click mouse
             event.preventDefault()
-            const keyword = searchRef.current.value
             router.push(`/search/${keyword}`)
         } 
     }

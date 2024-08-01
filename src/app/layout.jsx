@@ -5,9 +5,9 @@ import NavigationBar from "../components/NavigationBar";
 const gabarito = Gabarito({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Anime List",
+  title: "AnimeList By Nouval :)",
   description: "Website Anime Indonesia",
-};
+};  
 
 export default function RootLayout({ children }) {
   return (

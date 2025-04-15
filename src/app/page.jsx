@@ -8,8 +8,8 @@ const Page = async () => {
   return (
     <>
       {/* anime terpopuler */}
-      <section>
-        <div className="p-4">
+      <section className="py-4">
+        <div className="max-w-7xl mx-auto px-4">
           <Header title="Paling Populer" linkTitle="Lihat Semua" linkHref="/populer" />
           <AnimeList api={topAnime}/>
         </div>

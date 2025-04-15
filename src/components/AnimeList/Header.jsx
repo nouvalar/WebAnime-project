@@ -5,10 +5,11 @@ import Link from "next/link"
 const Header = ({ title, linkHref, linkTitle }) => {
     return (
         <div className="flex justify-between items-center p-4">
-            <h1 className="text-2xl font-bold text-white">{title}</h1>
+            <h1 className="text-2xl font-bold dark:text-white text-gray-900">{title}</h1>
             {linkHref && linkTitle ? 
                 <Link href={linkHref} 
-                    className="text-white underline hover:text-gray-200 transition-colors !text-white">
+                    className="md:text-xl text-md dark:text-gray-300 text-gray-600 hover:text-yellow-500 transition-all"
+                >
                     {linkTitle}
                 </Link>
                 : null

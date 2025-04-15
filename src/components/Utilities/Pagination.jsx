@@ -18,7 +18,7 @@ const Pagination = ({ page, lastPage, setPage }) => {
     }
 
     return (
-        <div className="flex justify-center items-center p-4 px-2 gap-4 text-color-primary text-2xl">
+        <div className="flex justify-center items-center p-4 px-2 gap-4 text-black text-2xl">
             { page <= 1 ? null : //Jika berada dipage 1 maka button prev tidak muncul
                 <button onClick={handlePrevPage} className="transition-all hover:text-color-accent">Prev</button>
             }

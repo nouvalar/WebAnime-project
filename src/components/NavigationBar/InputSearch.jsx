@@ -10,28 +10,28 @@ const InputSearch = () => {
 
     const handleSearch = (event) => {
         const keyword = searchRef.current.value
+        
+        if(!keyword || keyword.trim() === "") return
 
-        if (!keyword) return
-
-        if (event.key === "Enter" || event.type === "click") {
+        if(event.key === "Enter" || event.type === "click") {
             event.preventDefault()
             router.push(`/search/${keyword}`)
         }
     }
 
     return (
-        <div className="relative flex-1 max-w-xl">
-            <input
-                placeholder="cari anime..."
-                className="w-full p-2 rounded-md bg-[#FFD700] text-black placeholder:text-black border border-[#F5C518] focus:border-[#E5B517] focus:outline-none"
+        <div className="relative flex items-center flex-1 max-w-xl">
+            <input 
+                placeholder="cari anime..." 
+                className="w-full p-2 pl-3 text-base rounded-md dark:bg-gray-800 bg-gray-100 dark:text-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 ref={searchRef}
                 onKeyDown={handleSearch}
             />
-            <button
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-black hover:text-black"
+            <button 
+                className="absolute right-2 p-2 dark:text-gray-400 text-gray-600 hover:text-yellow-500 transition-colors"
                 onClick={handleSearch}
             >
-                <MagnifyingGlass size={24} />
+                <MagnifyingGlass size={20} />
             </button>
         </div>
     )

@@ -10,7 +10,7 @@ const AnimeList = ({ api }) => {
         return (
           <Link 
             href={`/anime/${anime.mal_id}`} 
-            className="cursor-pointer text-white hover:text-yellow-400 transition-all"
+            className="cursor-pointer hover:text-yellow-400 transition-all"
             key={index}
           >
             <div className="relative aspect-[3/4] bg-gray-800 rounded-md overflow-hidden">
@@ -24,7 +24,7 @@ const AnimeList = ({ api }) => {
                 quality={80}
               />
             </div>
-            <h3 className="font-medium text-md pt-2 line-clamp-2">{anime.title}</h3>
+            <h3 className="font-medium text-md pt-2 line-clamp-2 dark:text-white text-gray-900">{anime.title}</h3>
           </Link>
         )
       })}

@@ -1,20 +1,22 @@
-import { Gabarito } from "next/font/google";
+"use client"
+
+import { Inter } from "next/font/google";
 import "./globals.css";
-import NavigationBar from "../components/NavigationBar";
+import NavigationBar from "@/components/NavigationBar";
+import Providers from "./providers";
 
-const gabarito = Gabarito({ subsets: ["latin"] });
-
-export const metadata = {
-  title: "AnimeList By Nouval :)",
-  description: "Website Anime Indonesia",
-};  
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={'${gabarito.className} bg-color-dark'} suppressHydrationWarning={true}>
-        <NavigationBar/>
-        {children}
+      <body className={`${inter.className} bg-[#1a1a1a]`}>
+        <Providers>
+          <NavigationBar />
+          <main className="bg-gray-800">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

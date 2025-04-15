@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} bg-[#1a1a1a]`}>
         <Providers>
           <NavigationBar />
-          <main className="bg-gray-800">
+          <main className="bg-[#1F2937] min-h-screen">
             {children}
           </main>
         </Providers>

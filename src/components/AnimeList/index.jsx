@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,19 +10,21 @@ const AnimeList = ({ api }) => {
         return (
           <Link 
             href={`/anime/${anime.mal_id}`} 
-            className="cursor-pointer text-white hover:text-gray-300 transition-all"
+            className="cursor-pointer text-white hover:text-yellow-400 transition-all"
             key={index}
           >
-            <div className="bg-[#2a2a2a] pb-4 rounded-md hover:scale-[1.02] transition-all">
+            <div className="relative aspect-[3/4] bg-gray-800 rounded-md overflow-hidden">
               <Image
-                src={anime.images.webp.image_url}
-                alt="..."
-                width={350}
-                height={350}
-                className="w-full max-h-64 object-cover rounded-t-md"
+                src={anime.images.webp.large_image_url}
+                alt={anime.title}
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover rounded-md hover:scale-105 transition-all duration-300 ease-in-out"
+                loading="lazy"
+                quality={80}
               />
-              <h3 className="font-bold md:text-xl text-md p-4">{anime.title}</h3>
             </div>
+            <h3 className="font-medium text-md pt-2 line-clamp-2">{anime.title}</h3>
           </Link>
         )
       })}

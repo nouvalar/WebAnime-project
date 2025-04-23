@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { connect } from "@/lib/db";
+import { connectMongoDB } from "@/libs/mongodb";
 import { hash } from "bcrypt";
 import User from "@/models/user";
-import mongoose from "mongoose";
 
 export async function POST(request) {
     console.log("=== Memulai proses registrasi ===");
@@ -22,10 +21,8 @@ export async function POST(request) {
 
         console.log("Mencoba koneksi ke MongoDB...");
         // Koneksi ke MongoDB
-        const conn = await connect();
-        console.log("Status koneksi MongoDB:", mongoose.connection.readyState);
-        console.log("Database name:", mongoose.connection.name);
-        console.log("Collections:", await mongoose.connection.db.listCollections().toArray());
+        await connectMongoDB();
+        console.log("MongoDB Connected Successfully!");
 
         // Cek apakah email sudah terdaftar
         console.log("Memeriksa email duplikat...");
@@ -52,8 +49,7 @@ export async function POST(request) {
 
         console.log("User berhasil dibuat:", {
             id: user._id,
-            email: user.email,
-            collection: user.collection.name
+            email: user.email
         });
 
         return NextResponse.json(

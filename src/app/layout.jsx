@@ -5,7 +5,7 @@ import ClientLayout from "@/components/ClientLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'WebAnime',
+  title: 'WebAnime by Nouval',
   description: 'Website Anime Indonesia',
 }
 

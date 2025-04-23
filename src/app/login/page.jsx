@@ -1,57 +1,61 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import Alert from "@/components/Alert"
 
-const Page = () => {
+export default function LoginPage() {
     const router = useRouter()
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState({
-        email: "",
-        password: ""
-    })
-
-    const handleChange = (e) => {
-        const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
-    }
+    const [showAlert, setShowAlert] = useState(false)
+    const [alertMessage, setAlertMessage] = useState("")
+    const [alertType, setAlertType] = useState("success")
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        setIsLoading(true)
         setError("")
 
         try {
-            const res = await signIn("credentials", {
-                email: formData.email,
-                password: formData.password,
-                redirect: false
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
             })
 
-            if (res.error) {
+            if (result?.error) {
                 setError("Email atau password salah")
-                return
+                setAlertMessage("Email atau password salah")
+                setAlertType("error")
+                setShowAlert(true)
+            } else {
+                setAlertMessage("Login berhasil!")
+                setAlertType("success")
+                setShowAlert(true)
+                router.push("/")
             }
-
-            router.push("/")
-            router.refresh()
         } catch (error) {
-            console.error("Login error:", error)
             setError("Terjadi kesalahan saat login")
-        } finally {
-            setIsLoading(false)
+            setAlertMessage("Terjadi kesalahan saat login")
+            setAlertType("error")
+            setShowAlert(true)
         }
     }
 
     return (
         <div className="min-h-screen bg-black flex items-center justify-center px-4">
+            {showAlert && (
+                <Alert
+                    message={alertMessage}
+                    type={alertType}
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
             <div className="max-w-md w-full bg-[#F5C518] rounded-lg shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-center mb-6 text-black">Login ke ANIMELIST</h2>
+                <h2 className="text-2xl font-bold text-center mb-6 text-black">Login ANIMELIST</h2>
                 {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                         {error}
@@ -67,8 +71,8 @@ const Page = () => {
                             id="email"
                             name="email"
                             required
-                            value={formData.email}
-                            onChange={handleChange}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#F5C518] focus:border-[#F5C518]"
                         />
                     </div>
@@ -81,28 +85,25 @@ const Page = () => {
                             id="password"
                             name="password"
                             required
-                            value={formData.password}
-                            onChange={handleChange}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#F5C518] focus:border-[#F5C518]"
                         />
                     </div>
                     <button
                         type="submit"
-                        disabled={isLoading}
-                        className="w-full bg-[#FFD700] text-black py-2 px-4 rounded-md hover:bg-yellow-400 transition-colors font-medium disabled:opacity-50"
+                        className="w-full bg-[#FFD700] text-black py-2 px-4 rounded-md hover:bg-yellow-400 transition-colors font-medium"
                     >
-                        {isLoading ? "Memproses..." : "Masuk"}
+                        Login
                     </button>
                     <p className="text-center text-sm text-black">
                         Belum punya akun?{" "}
-                        <a href="/register" className="font-medium hover:text-yellow-700">
+                        <Link href="/register" className="font-medium hover:text-yellow-700">
                             Daftar di sini
-                        </a>
+                        </Link>
                     </p>
                 </form>
             </div>
         </div>
     )
-}
-
-export default Page 
+} 

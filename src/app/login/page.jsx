@@ -11,13 +11,17 @@ export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const [showAlert, setShowAlert] = useState(false)
-    const [alertMessage, setAlertMessage] = useState("")
-    const [alertType, setAlertType] = useState("success")
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError("")
+        setShowSuccessAlert(false)
+
+        if (!email || !password) {
+            setError("Email dan password harus diisi")
+            return
+        }
 
         try {
             const result = await signIn("credentials", {
@@ -28,31 +32,27 @@ export default function LoginPage() {
 
             if (result?.error) {
                 setError("Email atau password salah")
-                setAlertMessage("Email atau password salah")
-                setAlertType("error")
-                setShowAlert(true)
             } else {
-                setAlertMessage("Login berhasil!")
-                setAlertType("success")
-                setShowAlert(true)
-                router.push("/")
+                setShowSuccessAlert(true)
+                setTimeout(() => {
+                    router.push("/")
+                }, 1500)
             }
         } catch (error) {
             setError("Terjadi kesalahan saat login")
-            setAlertMessage("Terjadi kesalahan saat login")
-            setAlertType("error")
-            setShowAlert(true)
         }
     }
 
     return (
         <div className="min-h-screen bg-black flex items-center justify-center px-4">
-            {showAlert && (
-                <Alert
-                    message={alertMessage}
-                    type={alertType}
-                    onClose={() => setShowAlert(false)}
-                />
+            {showSuccessAlert && (
+                <div className="fixed inset-x-0 top-4 flex justify-center z-[100]">
+                    <Alert
+                        message="Login berhasil!"
+                        type="success"
+                        onClose={() => setShowSuccessAlert(false)}
+                    />
+                </div>
             )}
             <div className="max-w-md w-full bg-[#F5C518] rounded-lg shadow-lg p-8">
                 <h2 className="text-2xl font-bold text-center mb-6 text-black">Login ANIMELIST</h2>

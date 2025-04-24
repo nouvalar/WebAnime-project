@@ -11,13 +11,17 @@ export default function RegisterPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const [showAlert, setShowAlert] = useState(false)
-    const [alertMessage, setAlertMessage] = useState("")
-    const [alertType, setAlertType] = useState("success")
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError("")
+        setShowSuccessAlert(false)
+
+        if (!fullname || !email || !password) {
+            setError("Semua field harus diisi")
+            return
+        }
 
         try {
             const res = await fetch("/api/register", {
@@ -36,32 +40,28 @@ export default function RegisterPage() {
 
             if (!res.ok) {
                 setError(data.message)
-                setAlertMessage(data.message)
-                setAlertType("error")
-                setShowAlert(true)
                 return
             }
 
-            setAlertMessage("Registrasi berhasil! Silakan login")
-            setAlertType("success")
-            setShowAlert(true)
-            router.push("/login")
+            setShowSuccessAlert(true)
+            setTimeout(() => {
+                router.push("/login")
+            }, 1500)
         } catch (error) {
             setError("Terjadi kesalahan saat registrasi")
-            setAlertMessage("Terjadi kesalahan saat registrasi")
-            setAlertType("error")
-            setShowAlert(true)
         }
     }
 
     return (
         <div className="min-h-screen bg-black flex items-center justify-center px-4">
-            {showAlert && (
-                <Alert
-                    message={alertMessage}
-                    type={alertType}
-                    onClose={() => setShowAlert(false)}
-                />
+            {showSuccessAlert && (
+                <div className="fixed inset-x-0 top-4 flex justify-center z-[100]">
+                    <Alert
+                        message="Registrasi berhasil! Silakan login"
+                        type="success"
+                        onClose={() => setShowSuccessAlert(false)}
+                    />
+                </div>
             )}
             <div className="max-w-md w-full bg-[#F5C518] rounded-lg shadow-lg p-8">
                 <h2 className="text-2xl font-bold text-center mb-6 text-black">Daftar ANIMELIST</h2>

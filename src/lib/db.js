@@ -20,10 +20,15 @@ export const connect = async () => {
 
         if (!cached.promise) {
             const opts = {
-                bufferCommands: false,
-                serverSelectionTimeoutMS: 5000,
+                bufferCommands: true,
+                serverSelectionTimeoutMS: 30000, // Increased timeout
+                socketTimeoutMS: 30000,
+                connectTimeoutMS: 30000,
+                maxPoolSize: 10,
                 family: 4 // Gunakan IPv4
             }
+
+            mongoose.set('strictQuery', true)
 
             cached.promise = mongoose.connect(MONGODB_URI, opts)
                 .then((mongoose) => {
@@ -32,6 +37,7 @@ export const connect = async () => {
                 })
                 .catch((error) => {
                     console.error('Error connecting to MongoDB:', error.message)
+                    cached.promise = null // Reset promise on error
                     throw error
                 })
         }
@@ -39,6 +45,7 @@ export const connect = async () => {
         return cached.conn
     } catch (error) {
         console.error('MongoDB connection error:', error)
+        cached.promise = null // Reset promise on error
         throw error
     }
 } 

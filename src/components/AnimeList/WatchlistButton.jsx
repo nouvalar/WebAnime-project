@@ -4,9 +4,11 @@ import { useState, useEffect } from "react"
 import { Star } from "@phosphor-icons/react"
 import { useSession } from "next-auth/react"
 import Alert from "@/components/Alert"
+import { useWatchlist } from "@/context/WatchlistContext"
 
 const WatchlistButton = ({ animeId, initialIsInWatchlist = false, onUpdate }) => {
     const { data: session } = useSession()
+    const { updateWatchlistCount } = useWatchlist()
     const [isInWatchlist, setIsInWatchlist] = useState(initialIsInWatchlist)
     const [showAlert, setShowAlert] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
@@ -74,6 +76,9 @@ const WatchlistButton = ({ animeId, initialIsInWatchlist = false, onUpdate }) =>
             setIsInWatchlist(newWatchlistState)
             setAlertMessage(newWatchlistState ? "Berhasil ditambahkan ke watchlist" : "Berhasil dihapus dari watchlist")
             setShowAlert(true)
+
+            // Update the global watchlist count
+            await updateWatchlistCount()
 
             if (onUpdate) {
                 onUpdate()

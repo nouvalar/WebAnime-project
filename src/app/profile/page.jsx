@@ -1,14 +1,40 @@
 "use client"
 
 import { useSession } from "next-auth/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { User } from "@phosphor-icons/react"
 import { useDarkMode } from "@/context/DarkModeContext"
+import { useWatchlist } from "@/context/WatchlistContext"
 
 const Page = () => {
     const { data: session } = useSession()
     const [activeTab, setActiveTab] = useState('profile')
     const { darkMode, toggleDarkMode } = useDarkMode()
+    const { watchlistCount } = useWatchlist()
+    const [stats, setStats] = useState({
+        watchedAnime: 0,
+        watchlist: 0,
+        reviews: 0
+    })
+
+    useEffect(() => {
+        const fetchUserStats = async () => {
+            if (!session) return
+
+            try {
+                const response = await fetch('/api/user-stats')
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user stats')
+                }
+                const data = await response.json()
+                setStats(data)
+            } catch (error) {
+                console.error('Error fetching user stats:', error)
+            }
+        }
+
+        fetchUserStats()
+    }, [session, watchlistCount])
 
     if (!session) {
         return (
@@ -93,15 +119,15 @@ const Page = () => {
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <div className="dark:bg-[#2a2a2a] bg-gray-50 p-4 rounded-lg">
                                         <p className="dark:text-gray-400 text-gray-600 text-sm">Watched Anime</p>
-                                        <p className="text-2xl font-bold text-[#F5C518]">0</p>
+                                        <p className="text-2xl font-bold text-[#F5C518]">{stats.watchedAnime}</p>
                                     </div>
                                     <div className="dark:bg-[#2a2a2a] bg-gray-50 p-4 rounded-lg">
                                         <p className="dark:text-gray-400 text-gray-600 text-sm">Watchlist</p>
-                                        <p className="text-2xl font-bold text-[#F5C518]">0</p>
+                                        <p className="text-2xl font-bold text-[#F5C518]">{stats.watchlist}</p>
                                     </div>
                                     <div className="dark:bg-[#2a2a2a] bg-gray-50 p-4 rounded-lg">
                                         <p className="dark:text-gray-400 text-gray-600 text-sm">Reviews</p>
-                                        <p className="text-2xl font-bold text-[#F5C518]">0</p>
+                                        <p className="text-2xl font-bold text-[#F5C518]">{stats.reviews}</p>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +138,11 @@ const Page = () => {
                         <div>
                             <h2 className="text-xl font-semibold dark:text-white text-gray-900 mb-4">My Watchlist</h2>
                             <div className="dark:text-gray-400 text-gray-600 text-center py-8">
-                                No anime in your watchlist yet
+                                {stats.watchlist === 0 ? (
+                                    "No anime in your watchlist yet"
+                                ) : (
+                                    `You have ${stats.watchlist} anime in your watchlist`
+                                )}
                             </div>
                         </div>
                     )}

@@ -30,6 +30,15 @@ const userSchema = new mongoose.Schema({
       default: 'plan_to_watch'
     }
   }],
+  provider: {
+    type: String,
+    enum: ["credentials", "google"],
+    default: "credentials"
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 }, {
     timestamps: true
 })

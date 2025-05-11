@@ -1,11 +1,16 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { connect } from "@/lib/db";
 import User from "@/models/user";
 import { compare } from "bcrypt";
 
 export const authOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -45,6 +50,29 @@ export const authOptions = {
     signIn: "/login"
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account.provider === "google") {
+        try {
+          await connect();
+          const existingUser = await User.findOne({ email: user.email });
+          
+          if (!existingUser) {
+            // Create new user if doesn't exist
+            await User.create({
+              email: user.email,
+              fullname: user.name,
+              password: "", // Empty password for social login
+              provider: "google"
+            });
+          }
+          return true;
+        } catch (error) {
+          console.error("Error during Google sign in:", error);
+          return false;
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

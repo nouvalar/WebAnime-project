@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-        required: [true, "Password harus diisi"],
+    required: function() {
+      // Hanya required jika provider adalah credentials
+      return this.provider === "credentials";
+    },
   },
   image: {
     type: String,

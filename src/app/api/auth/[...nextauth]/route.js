@@ -68,7 +68,7 @@ export const authOptions = {
           return true;
         } catch (error) {
           console.error("Error during Google sign in:", error);
-          return false;
+          throw new Error("Google sign in error: " + error.message);
         }
       }
       return true;

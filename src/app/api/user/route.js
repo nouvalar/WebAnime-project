@@ -22,6 +22,6 @@ export async function PUT(req) {
     await User.findByIdAndUpdate(session.user.id, updateData);
     return new Response(JSON.stringify({ message: "Profile updated" }), { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ message: "Failed to update profile" }), { status: 500 });
+    return new Response(JSON.stringify({ message: error.message }), { status: 500 });
   }
 } 

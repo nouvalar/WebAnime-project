@@ -16,6 +16,12 @@ const Page = () => {
         watchlist: 0,
         reviews: 0
     })
+    const [editName, setEditName] = useState(session?.user?.name || "");
+    const [editEmail, setEditEmail] = useState(session?.user?.email || "");
+    const [editPassword, setEditPassword] = useState("");
+    const [editLoading, setEditLoading] = useState(false);
+    const [editSuccess, setEditSuccess] = useState("");
+    const [editError, setEditError] = useState("");
 
     useEffect(() => {
         const fetchUserStats = async () => {
@@ -35,6 +41,35 @@ const Page = () => {
 
         fetchUserStats()
     }, [session, watchlistCount])
+
+    const handleEditProfile = async (e) => {
+        e.preventDefault();
+        setEditLoading(true);
+        setEditSuccess("");
+        setEditError("");
+        try {
+            const res = await fetch("/api/user", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: editName,
+                    email: editEmail,
+                    password: editPassword || undefined,
+                }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setEditSuccess("Profile updated successfully!");
+                setEditPassword("");
+                // Optionally, refresh session here
+            } else {
+                setEditError(data.message || "Failed to update profile");
+            }
+        } catch {
+            setEditError("Failed to update profile");
+        }
+        setEditLoading(false);
+    };
 
     if (!session) {
         return (
@@ -150,26 +185,63 @@ const Page = () => {
                     {activeTab === 'settings' && (
                         <div className="space-y-6">
                             <h2 className="text-xl font-semibold dark:text-white text-gray-900 mb-4">Account Settings</h2>
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">Email Notifications</label>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" className="sr-only peer" />
-                                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F5C518]"></div>
-                                    </label>
+                            <form onSubmit={handleEditProfile} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">Full Name</label>
+                                    <input
+                                        type="text"
+                                        value={editName}
+                                        onChange={e => setEditName(e.target.value)}
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
+                                    />
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">Dark Mode</label>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input 
-                                            type="checkbox" 
-                                            className="sr-only peer" 
-                                            checked={darkMode}
-                                            onChange={toggleDarkMode}
-                                        />
-                                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F5C518]"></div>
-                                    </label>
+                                <div>
+                                    <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">Email</label>
+                                    <input
+                                        type="email"
+                                        value={editEmail}
+                                        onChange={e => setEditEmail(e.target.value)}
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
+                                    />
                                 </div>
+                                <div>
+                                    <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">New Password</label>
+                                    <input
+                                        type="password"
+                                        value={editPassword}
+                                        onChange={e => setEditPassword(e.target.value)}
+                                        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm"
+                                        placeholder="Leave blank to keep current password"
+                                    />
+                                </div>
+                                {editSuccess && <div className="text-green-600">{editSuccess}</div>}
+                                {editError && <div className="text-red-600">{editError}</div>}
+                                <button
+                                    type="submit"
+                                    disabled={editLoading}
+                                    className="w-full bg-[#FFD700] text-black py-2 px-4 rounded-md hover:bg-yellow-400 transition-colors font-medium"
+                                >
+                                    {editLoading ? "Saving..." : "Save Changes"}
+                                </button>
+                            </form>
+                            <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">Email Notifications</label>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" className="sr-only peer" />
+                                    <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F5C518]"></div>
+                                </label>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium dark:text-gray-400 text-gray-600">Dark Mode</label>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only peer" 
+                                        checked={darkMode}
+                                        onChange={toggleDarkMode}
+                                    />
+                                    <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F5C518]"></div>
+                                </label>
                             </div>
                         </div>
                     )}

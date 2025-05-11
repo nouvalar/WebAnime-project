@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Alert from "@/components/Alert"
+import GoogleButton from "@/components/auth/GoogleButton"
 
 export default function RegisterPage() {
     const router = useRouter()
@@ -113,6 +114,12 @@ export default function RegisterPage() {
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#F5C518] focus:border-[#F5C518]"
                         />
                     </div>
+                    <div className="flex items-center justify-center space-x-4">
+                        <div className="flex-1 h-px bg-gray-300"></div>
+                        <span className="px-4 text-sm text-gray-700">atau</span>
+                        <div className="flex-1 h-px bg-gray-300"></div>
+                    </div>
+                    <GoogleButton text="Sign up with Google" />
                     <button
                         type="submit"
                         className="w-full bg-[#FFD700] text-black py-2 px-4 rounded-md hover:bg-yellow-400 transition-colors font-medium"

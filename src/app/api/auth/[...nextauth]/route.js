@@ -75,7 +75,14 @@ export const authOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id || user._id;
+        // Pastikan token.id selalu MongoDB _id
+        if (!user.id && user.email) {
+          await connect();
+          const dbUser = await User.findOne({ email: user.email });
+          token.id = dbUser ? dbUser._id.toString() : undefined;
+        } else {
+          token.id = user.id || user._id;
+        }
         token.email = user.email;
         token.name = user.name;
       }
